@@ -46,7 +46,7 @@ import org.freeplane.n3.nanoxml.XMLElement;
  * @author Dimitry Polivaev
  * 21.12.2008
  */
-class NodeTextConditionController implements IElementaryConditionController {
+public class NodeTextConditionController implements IElementaryConditionController {
 	private final ComboBoxModel values = new DefaultComboBoxModel();
 
 	public boolean canEditValues(final Object selectedItem, final TranslatedObject simpleCond) {
@@ -60,6 +60,7 @@ class NodeTextConditionController implements IElementaryConditionController {
 		final TranslatedObject namedObject = (TranslatedObject) selectedItem;
 		return namedObject.objectEquals(TextController.FILTER_NODE)
 		|| namedObject.objectEquals(TextController.FILTER_PARENT_TEXT)
+		|| namedObject.objectEquals(TextController.FILTER_NODE_ID)
 		|| namedObject.objectEquals(TextController.FILTER_DETAILS)
 		|| namedObject.objectEquals(TextController.FILTER_NOTE)
 		|| namedObject.objectEquals(TextController.FILTER_ANYTEXT);
@@ -129,6 +130,7 @@ class NodeTextConditionController implements IElementaryConditionController {
 		final DefaultListModel list = new DefaultListModel();
 		list.addElement(TextUtils.createTranslatedString(TextController.FILTER_ANYTEXT));
 		list.addElement(TextUtils.createTranslatedString(TextController.FILTER_NODE));
+		list.addElement(TextUtils.createTranslatedString(TextController.FILTER_NODE_ID));
 		list.addElement(TextUtils.createTranslatedString(TextController.FILTER_DETAILS));
 		list.addElement(TextUtils.createTranslatedString(TextController.FILTER_NOTE));
 		list.addElement(TextUtils.createTranslatedString(TextController.FILTER_PARENT_TEXT));
@@ -181,7 +183,8 @@ class NodeTextConditionController implements IElementaryConditionController {
 			return new Object[] { 
 					getItemForComparison(TextController.FILTER_NODE, node), 
 					getItemForComparison(TextController.FILTER_DETAILS, node),
-			        getItemForComparison(TextController.FILTER_NOTE, node) };
+					getItemForComparison(TextController.FILTER_NOTE, node),
+					getItemForComparison(TextController.FILTER_NODE_ID, node) };
 		}
 		else
 			return new Object[] { getItemForComparison(nodeItem, node) };
@@ -191,6 +194,8 @@ class NodeTextConditionController implements IElementaryConditionController {
 		final Object result;
 		if(nodeItem.equals(TextController.FILTER_NODE)){
 			result = transformedObject(node);
+		} else if (nodeItem.equals(TextController.FILTER_NODE_ID)) {
+			result = TextController.getController().getNodeIdText(node);
 		}
 		else if(nodeItem.equals(TextController.FILTER_PARENT_TEXT)){
 			final NodeModel parentNode = node.getParentNode();

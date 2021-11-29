@@ -68,6 +68,7 @@ public class TextController implements IExtension {
 
     public static final String DETAILS_HIDDEN = "DETAILS_HIDDEN";
 	public static final String FILTER_NODE = "filter_node";
+	public static final String FILTER_NODE_ID = "filter_node_id";
 	public static final String FILTER_ANYTEXT = "filter_any_text";
 	public static final String FILTER_NOTE = "filter_note";
 	public static final String FILTER_PARENT_TEXT = "filter_parent_text";
@@ -252,6 +253,16 @@ public class TextController implements IExtension {
 	/** returns transformed text converted to plain text. */
 	public String getPlainTransformedText(NodeModel nodeModel) {
 		return HtmlUtils.htmlToPlain(getTransformedTextNoThrow(nodeModel));
+	}
+
+	/**
+	 * This method return the nodeID from a NodeModel as a string
+	 * @param nodeModel This is the node to get the NodeID from
+	 * @return String the value of the nodeID if present, otherwise empty string
+	 */
+	public String getNodeIdText(NodeModel nodeModel) {
+		String nodeId = nodeModel.getID();
+		return nodeId == null ? "" : nodeModel.getID();
 	}
 
 	public String getPlainTransformedTextWithoutNodeNumber(NodeModel node) {
