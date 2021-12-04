@@ -46,13 +46,18 @@ import org.freeplane.n3.nanoxml.XMLElement;
  * @author Dimitry Polivaev
  * 21.12.2008
  */
-class NodeTextConditionController implements IElementaryConditionController {
+public class NodeTextConditionController implements IElementaryConditionController {
 	private final ComboBoxModel values = new DefaultComboBoxModel();
 
 	public boolean canEditValues(final Object selectedItem, final TranslatedObject simpleCond) {
 		return true;
 	}
 
+	/**
+	 * This method returns a boolean to represent if the selectedItem can be handled by an existing filter
+	 * @param selectedItem the selected TranslatedObject to check if a filter exists
+	 * @return boolean if the selectedItem can be handled by an existing filter
+	 */
 	public boolean canHandle(final Object selectedItem) {
 		if (!(selectedItem instanceof TranslatedObject)) {
 			return false;
@@ -60,6 +65,7 @@ class NodeTextConditionController implements IElementaryConditionController {
 		final TranslatedObject namedObject = (TranslatedObject) selectedItem;
 		return namedObject.objectEquals(TextController.FILTER_NODE)
 		|| namedObject.objectEquals(TextController.FILTER_PARENT_TEXT)
+		|| namedObject.objectEquals(TextController.FILTER_NODE_ID)
 		|| namedObject.objectEquals(TextController.FILTER_DETAILS)
 		|| namedObject.objectEquals(TextController.FILTER_NOTE)
 		|| namedObject.objectEquals(TextController.FILTER_ANYTEXT);
@@ -125,10 +131,15 @@ class NodeTextConditionController implements IElementaryConditionController {
 		        TextUtils.createTranslatedString(ConditionFactory.FILTER_REGEXP), });
 	}
 
+	/**
+	 * Returns ListModel of available filters
+	 * @return ListModel to represent the possible filters to populate filter dropdown
+	 */
 	public ListModel getFilteredProperties() {
 		final DefaultListModel list = new DefaultListModel();
 		list.addElement(TextUtils.createTranslatedString(TextController.FILTER_ANYTEXT));
 		list.addElement(TextUtils.createTranslatedString(TextController.FILTER_NODE));
+		list.addElement(TextUtils.createTranslatedString(TextController.FILTER_NODE_ID));
 		list.addElement(TextUtils.createTranslatedString(TextController.FILTER_DETAILS));
 		list.addElement(TextUtils.createTranslatedString(TextController.FILTER_NOTE));
 		list.addElement(TextUtils.createTranslatedString(TextController.FILTER_PARENT_TEXT));
@@ -176,21 +187,36 @@ class NodeTextConditionController implements IElementaryConditionController {
 		return null;
 	}
 
+	/**
+	 * Returns an array of Objects of comparisons of NodeModels
+	 * @param nodeItem Object that can represent the TextController String that is being used for comparison
+	 * @param node the node of the mind map being compared to
+	 * @return Object[] of comparison items given the TextController filter and node in the mind map
+	 */
 	public static Object[] getItemsForComparison(Object nodeItem, final NodeModel node) {
 		if (nodeItem.equals(TextController.FILTER_ANYTEXT)) {
 			return new Object[] { 
 					getItemForComparison(TextController.FILTER_NODE, node), 
 					getItemForComparison(TextController.FILTER_DETAILS, node),
-			        getItemForComparison(TextController.FILTER_NOTE, node) };
+					getItemForComparison(TextController.FILTER_NOTE, node),
+					getItemForComparison(TextController.FILTER_NODE_ID, node) };
 		}
 		else
 			return new Object[] { getItemForComparison(nodeItem, node) };
 	}
-	
+
+	/**
+	 * Returns an item of comparision or null if non-existent
+	 * @param nodeItem String representation of a the TextController filter type
+	 * @param node NodeModel of the node being compared in the mindmap
+	 * @return Object being compared of the node, null if non-existent or String representation to be compared
+	 */
 	private static Object getItemForComparison(Object nodeItem, final NodeModel node) {
 		final Object result;
 		if(nodeItem.equals(TextController.FILTER_NODE)){
 			result = transformedObject(node);
+		} else if (nodeItem.equals(TextController.FILTER_NODE_ID)) {
+			result = TextController.getController().getNodeIdText(node);
 		}
 		else if(nodeItem.equals(TextController.FILTER_PARENT_TEXT)){
 			final NodeModel parentNode = node.getParentNode();
