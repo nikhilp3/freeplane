@@ -53,6 +53,11 @@ public class NodeTextConditionController implements IElementaryConditionControll
 		return true;
 	}
 
+	/**
+	 * This method returns a boolean to represent if the selectedItem can be handled by an existing filter
+	 * @param selectedItem the selected TranslatedObject to check if a filter exists
+	 * @return boolean if the selectedItem can be handled by an existing filter
+	 */
 	public boolean canHandle(final Object selectedItem) {
 		if (!(selectedItem instanceof TranslatedObject)) {
 			return false;
@@ -126,6 +131,10 @@ public class NodeTextConditionController implements IElementaryConditionControll
 		        TextUtils.createTranslatedString(ConditionFactory.FILTER_REGEXP), });
 	}
 
+	/**
+	 * Returns ListModel of available filters
+	 * @return ListModel to represent the possible filters to populate filter dropdown
+	 */
 	public ListModel getFilteredProperties() {
 		final DefaultListModel list = new DefaultListModel();
 		list.addElement(TextUtils.createTranslatedString(TextController.FILTER_ANYTEXT));
@@ -178,6 +187,12 @@ public class NodeTextConditionController implements IElementaryConditionControll
 		return null;
 	}
 
+	/**
+	 * Returns an array of Objects of comparisons of NodeModels
+	 * @param nodeItem Object that can represent the TextController String that is being used for comparison
+	 * @param node the node of the mind map being compared to
+	 * @return Object[] of comparison items given the TextController filter and node in the mind map
+	 */
 	public static Object[] getItemsForComparison(Object nodeItem, final NodeModel node) {
 		if (nodeItem.equals(TextController.FILTER_ANYTEXT)) {
 			return new Object[] { 
@@ -189,7 +204,13 @@ public class NodeTextConditionController implements IElementaryConditionControll
 		else
 			return new Object[] { getItemForComparison(nodeItem, node) };
 	}
-	
+
+	/**
+	 * Returns an item of comparision or null if non-existent
+	 * @param nodeItem String representation of a the TextController filter type
+	 * @param node NodeModel of the node being compared in the mindmap
+	 * @return Object being compared of the node, null if non-existent or String representation to be compared
+	 */
 	private static Object getItemForComparison(Object nodeItem, final NodeModel node) {
 		final Object result;
 		if(nodeItem.equals(TextController.FILTER_NODE)){
